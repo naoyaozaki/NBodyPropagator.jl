@@ -1,6 +1,6 @@
-using NBodyPropagator
+using NBodyProblem
 using Test
 
-@testset "NBodyPropagator.jl" begin
+@testset "NBodyProblem.jl" begin
     # Write your tests here.
 end

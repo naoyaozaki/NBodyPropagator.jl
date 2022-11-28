@@ -1,4 +1,4 @@
-module NBodyPropagator
+module NBodyProblem
 
 # Write your package code here.
 
