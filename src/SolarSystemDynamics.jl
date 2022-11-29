@@ -8,11 +8,22 @@ export ssd
 # Import Modules
 using Downloads
 
+"""Solar System Dynamics Parameter Sets (Struct)
+
+Attributes:
+    AU                : Astronomical unit, km
+    ID(dict) : ID of planetary bodies where the key is the body name.
+    NAME(dict) : NAME of planetary bodies where the key is the body id.
+    GM(dict) : Gravity constant of planetary bodies where the key is the body name, km3/s2.
+    RE(dict) : Equitorial radius of planetary bodies where the key is the body name, km.
+"""
 struct SolarSystemDynamics
+    AU::Real
     ID::Dict{String,Integer}
     GM::Dict{String,Real}
     RE::Dict{String,Real}
     function SolarSystemDynamics()
+        _AU = 149597870.7  # km
         _ID = Dict(
             "SOLAR_SYSTEM_BARYCENTER" => 0
         )
@@ -22,7 +33,7 @@ struct SolarSystemDynamics
         _RE = Dict(
             "SOLAR_SYSTEM_BARYCENTER" => NaN
         )
-        new(_ID, _GM, _RE)
+        new(_AU, _ID, _GM, _RE)
     end
 end
 
