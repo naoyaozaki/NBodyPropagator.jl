@@ -3,7 +3,7 @@
 
 # Export Function
 export get_path_of_genker
-export SolarSystemDynamics
+export ssd
 
 # Import Modules
 using Downloads
@@ -25,6 +25,8 @@ struct SolarSystemDynamics
         new(_ID, _GM, _RE)
     end
 end
+
+ssd = SolarSystemDynamics()
 
 """Get the path of specific generic kernels.
 
