@@ -3,10 +3,28 @@
 
 # Export Function
 export get_path_of_genker
+export SolarSystemDynamics
 
 # Import Modules
 using Downloads
 
+struct SolarSystemDynamics
+    ID::Dict{String,Integer}
+    GM::Dict{String,Real}
+    RE::Dict{String,Real}
+    function SolarSystemDynamics()
+        _ID = Dict(
+            "SOLAR_SYSTEM_BARYCENTER" => 0
+        )
+        _GM = Dict(
+            "SOLAR_SYSTEM_BARYCENTER" => 1.1
+        )
+        _RE = Dict(
+            "SOLAR_SYSTEM_BARYCENTER" => NaN
+        )
+        new(_ID, _GM, _RE)
+    end
+end
 
 """Get the path of specific generic kernels.
 
