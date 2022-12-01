@@ -19,11 +19,12 @@ Attributes:
     RE(dict) : Equitorial radius of planetary bodies where the key is the body name, km.
 """
 struct SolarSystemDynamics
-    AU::Real
+    AU::Float64
     ID::Dict{String,Integer}
-    GM::Dict{String,Real}
-    RE::Dict{String,Real}
+    GM::Dict{String,Float64}
+    RE::Dict{String,Float64}
     NAME::Dict{Integer,String}
+    OE::Dict{String,Dict}
 
     """ Constructor of the SolarSystemDynamics struct
     """
@@ -96,7 +97,27 @@ struct SolarSystemDynamics
             end
         end
 
-        new(_AU, _ID, _GM, _RE, _NAME)
+
+        # 4) Mean Orbital Elements
+        _OE = Dict{String,Dict}()
+        list_oe = ["MERCURY", "VENUS", "EARTH", "MARS", "JUPITER", "SATURN",
+            "URANUS", "NEPTUNE", "PLUTO"]
+
+        current_directory = dirname(abspath(@__FILE__))
+        open(current_directory * "/../data/lib/p_elem_t1.txt", "r") do f
+            list = readlines(f)
+            for id in 1:9
+                _elem = parse.(Float64, split(list[15+2*id][8:end]))
+                _OE[list_oe[id]] = Dict("sma" => _elem[1] * _AU, #= km =#
+                    "ecc" => _elem[2], #= non-dim =#
+                    "inc" => _elem[3] * (π / 180), #= rad =#
+                    "meanlong" => _elem[4] * (π / 180), #= rad =#
+                    "argp" => _elem[5] * (π / 180), #= rad =#
+                    "lnode" => _elem[6] * (π / 180)) #= rad =#
+            end
+        end
+
+        new(_AU, _ID, _GM, _RE, _NAME, _OE)
     end
 end
 
