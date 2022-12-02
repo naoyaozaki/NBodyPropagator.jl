@@ -12,11 +12,12 @@ using Downloads
 """Solar System Dynamics Parameter Sets (Struct)
 
 Attributes:
-    AU                : Astronomical unit, km
-    ID(dict) : ID of planetary bodies where the key is the body name.
-    NAME(dict) : NAME of planetary bodies where the key is the body id.
-    GM(dict) : Gravity constant of planetary bodies where the key is the body name, km3/s2.
-    RE(dict) : Equitorial radius of planetary bodies where the key is the body name, km.
+    AU (Float64)               : Astronomical unit, km
+    ID (Dict{String,Integer})  : ID of planetary bodies where the key is the body name.
+    GM (Dict{String,Float64})  : Gravity constant of planetary bodies where the key is the body name, km3/s2.
+    RE (Dict{String,Float64})  : Equitorial radius of planetary bodies where the key is the body name, km.
+    NAME (Dict{String,String}) : NAME of planetary bodies where the key is the body id.
+    OE (Dict{String,Dict})     : Orbital elements of planets.
 """
 struct SolarSystemDynamics
     AU::Float64
