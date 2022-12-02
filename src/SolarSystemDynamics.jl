@@ -2,7 +2,7 @@
 """
 
 # Export Function
-export get_path_of_genker, initialize_kernels
+export get_path_of_genker, init_spice_kernels
 export ssd
 
 # Import Modules
@@ -159,18 +159,17 @@ Note:
 function init_spice_kernels()
     # Initialize SPICE Kernels
 
-    # SPICE.furnsh(get_path_of_genker("spk/satellites/jup310.bsp")) # Jupiter system kernel
-    # SPICE.furnsh(get_path_of_genker("spk/satellites/ura090_1.bsp")) # Uranus system kernel
-    # SPICE.furnsh(get_path_of_genker("spk/satellites/mar097.bsp")) # Mars system kernel
-    # SPICE.furnsh(get_path_of_genker("spk/satellites/sat317.bsp")) # Saturn system kernel
-    # SPICE.furnsh(get_path_of_genker("spk/satellites/nep077.bsp")) # Neptune system kernel
-    # SPICE.furnsh(get_path_of_genker("spk/satellites/nep081.bsp")) # Neptune system kernel
-    SPICE.furnsh(get_path_of_genker("pck/earth_fixed.tf")) # Earth fixed system
     SPICE.furnsh(get_path_of_genker("pck/earth_200101_990628_predict.bpc")) # Earth-moon system kernel
+    SPICE.furnsh(get_path_of_genker("pck/earth_fixed.tf")) # Earth fixed system
     SPICE.furnsh(get_path_of_genker("lsk/naif0012.tls")) # Leap seconds kernel
     SPICE.furnsh(get_path_of_genker("pck/gm_de431.tpc")) # Gravity Constant
     SPICE.furnsh(get_path_of_genker("pck/pck00010.tpc")) # P-Constant
-    SPICE.furnsh(get_path_of_genker("spk/planets/de430.bsp")) # Planetary ephemeris kernel
+    SPICE.furnsh(get_path_of_genker("spk/satellites/nep101.bsp")) # Neptune system kernel
+    SPICE.furnsh(get_path_of_genker("spk/satellites/sat452.bsp")) # Saturn system kernel
+    SPICE.furnsh(get_path_of_genker("spk/satellites/mar097.bsp")) # Mars system kernel
+    SPICE.furnsh(get_path_of_genker("spk/satellites/ura116.bsp")) # Uranus system kernel
+    SPICE.furnsh(get_path_of_genker("spk/satellites/jup365.bsp")) # Jupiter system kernel
+    SPICE.furnsh(get_path_of_genker("spk/planets/de440.bsp")) # Planetary ephemeris kernel
 end
 
 ssd = SolarSystemDynamics()
