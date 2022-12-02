@@ -4,8 +4,10 @@ authors = ["Naoya Ozaki"]
 version = "0.1.0"
 
 [deps]
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
 
