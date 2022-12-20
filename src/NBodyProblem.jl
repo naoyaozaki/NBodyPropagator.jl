@@ -6,6 +6,9 @@ include("SolarSystemDynamics.jl")
 
 export twobody!
 
+# Define the Solar System Dynamics Constant
+ssd = SolarSystemDynamics()
+
 # Definition of Ordinary Differential Equation
 function twobody!(dxdt, x, p, t)
     # dx/dt
