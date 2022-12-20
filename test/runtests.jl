@@ -4,6 +4,9 @@ using Test
 
 @testset "NBodyProblem.jl" begin
 
+    # Get Solar System Dynamics Constant
+    ssd = SolarSystemDynamics()
+
     @testset "Case 1: Test values of AU,ID,GM,RE,NAME" begin
         # Compared with nomad (Python) results
         @test ssd.AU == 149597870.7 # km

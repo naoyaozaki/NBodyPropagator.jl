@@ -3,7 +3,7 @@
 
 # Export Function
 export get_path_of_genker, init_spice_kernels
-export ssd
+export SolarSystemDynamics
 
 # Import Modules
 import SPICE
@@ -171,5 +171,3 @@ function init_spice_kernels()
     SPICE.furnsh(get_path_of_genker("spk/satellites/jup365.bsp")) # Jupiter system kernel
     SPICE.furnsh(get_path_of_genker("spk/planets/de440.bsp")) # Planetary ephemeris kernel
 end
-
-ssd = SolarSystemDynamics()
