@@ -46,4 +46,23 @@ using Test
         expected = [-6.71573226872288389131e+05, 4.57777683529129062663e+04, 5.90781640300525486964e+03, -1.01543406126799906630e+00, -1.23500573487305977949e+01, -5.84209720106468921585e+00]
         @test SPICE.spkez(502, et, "J2000", "NONE", 599)[1] == expected
     end
+
+    @testset "Case 4: NbodyProblem.jl Propagation" begin
+        # Expected solution computed by jTOP
+        expected = [4.223452240274889e+07, 1.167639934644109e+08, 7.759081404451908e+06, 9.233252399330388e+00, -5.023755467018450e+00, 2.053379246746268e+00]  # km, km/s
+
+        # Parameter Setting
+        list_bodies = [10, 399, 301, 299, 499, 599]
+
+        # Initial Condition
+        et0 = SPICE.str2et("2019 JAN 01 12:00:00 TDB")
+        x0 = [1e7, 1e8, 1e6, 15, 20, 3]
+        tspan = (et0, et0 + 30 * 86400)
+
+        # Integrate
+        # nbp = NBodyProblem(x0, tspan, list_bodies)
+        # sol = solve(nbp, reltol=1e-8, abstol=1e-8)
+
+        # @test sol[:, end] == expected
+    end
 end
