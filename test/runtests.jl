@@ -49,20 +49,20 @@ using Test
 
     @testset "Case 4: NbodyProblem.jl Propagation" begin
         # Expected solution computed by jTOP
-        expected = [4.223452240274889e+07, 1.167639934644109e+08, 7.759081404451908e+06, 9.233252399330388e+00, -5.023755467018450e+00, 2.053379246746268e+00]  # km, km/s
+        expected = [+4.223450194979922e+07, +1.167640417577651e+08, +7.759087742359675e+06, +9.233242342590227e+00, -5.023717927929555e+00, +2.053384118051583e+00]  # km, km/s
 
         # Parameter Setting
         list_bodies = [10, 399, 301, 299, 499, 599]
 
         # Initial Condition
         et0 = SPICE.str2et("2019 JAN 01 12:00:00 TDB")
-        x0 = [1e7, 1e8, 1e6, 15, 20, 3]
-        tspan = (et0, et0 + 30 * 86400)
+        x0 = [1.0e7, 1.0e8, 1.0e6, 15.0, 20.0, 3.0]
+        tspan = (et0, et0 + 30.0 * 86400.0)
 
         # Integrate
-        # nbp = NBodyProblem(x0, tspan, list_bodies)
-        # sol = solve(nbp, reltol=1e-8, abstol=1e-8)
+        nbp = NBodyProblem(x0, tspan, list_bodies)
+        sol = propagate(nbp)
 
-        # @test sol[:, end] == expected
+        @test sol[:, end] ≈ expected rtol = 1e-10
     end
 end

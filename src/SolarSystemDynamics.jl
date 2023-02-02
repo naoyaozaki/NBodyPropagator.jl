@@ -158,7 +158,6 @@ Note:
 """
 function init_spice_kernels()
     # Initialize SPICE Kernels
-
     SPICE.furnsh(get_path_of_genker("pck/earth_200101_990628_predict.bpc")) # Earth-moon system kernel
     SPICE.furnsh(get_path_of_genker("pck/earth_fixed.tf")) # Earth fixed system
     SPICE.furnsh(get_path_of_genker("lsk/naif0012.tls")) # Leap seconds kernel
