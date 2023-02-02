@@ -1,8 +1,8 @@
-using NBodyProblem
+using NBodyPropagator
 import SPICE
 using Test
 
-@testset "NBodyProblem.jl" begin
+@testset "NBodyPropagator.jl" begin
 
     # Get Solar System Dynamics Constant
     ssd = SolarSystemDynamics()

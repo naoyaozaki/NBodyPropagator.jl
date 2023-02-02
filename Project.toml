@@ -1,4 +1,4 @@
-name = "NBodyProblem"
+name = "NBodyPropagator"
 uuid = "7ec7aa2d-e1e8-49fd-8b2f-0bf01532ae7c"
 authors = ["Naoya Ozaki"]
 version = "0.1.0"

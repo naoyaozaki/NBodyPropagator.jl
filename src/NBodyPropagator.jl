@@ -1,4 +1,4 @@
-module NBodyProblem
+module NBodyPropagator
 using LinearAlgebra
 
 include("SolarSystemDynamics.jl")
@@ -19,9 +19,9 @@ end
 
 
 """
-NBodyDynSys{K}(x0, tspan, list_bodies; kwargs...)
+NBodyProblem{K}(x0, tspan, list_bodies; kwargs...)
 
-Constructor of the Struct `NBodyDynSys{K}`.
+Constructor of the Struct `NBodyProblem{K}`.
 
 # Arguments
 - `x0`: Initial state vector.
@@ -38,7 +38,7 @@ Constructor of the Struct `NBodyDynSys{K}`.
 - `need_stm`: Whether the STM is needed.
 - `need_transitional_state`: Whether the transitional state is needed.
 """
-struct NBodyDynSys{K}
+struct NBodyProblem{K}
     # Fields
     x0::Array{Float64,1}
     tspan::Tuple{Float64,Float64}
@@ -46,7 +46,7 @@ struct NBodyDynSys{K}
     kwargs::K
 
     # Constructor of the Struct
-    function NBodyDynSys(x0, tspan, list_bodies; kwargs...)
+    function NBodyProblem(x0, tspan, list_bodies; kwargs...)
 
         # Merge keyword argments
         defaults = (; id_center=0, #= SOLAR SYSTEM BARYCENTER =#

@@ -1,4 +1,4 @@
-# NBodyProblem.jl
+# NBodyPropagator.jl
 N-body problem propagator for spacecraft trajectory using real ephemerides of planets 
 
 [![Build Status](https://travis-ci.com/naoyaozaki/NBodyPropagator.jl.svg?branch=main)](https://travis-ci.com/naoyaozaki/NBodyPropagator.jl)
