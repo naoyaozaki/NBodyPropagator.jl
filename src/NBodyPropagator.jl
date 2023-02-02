@@ -1,10 +1,12 @@
 module NBodyPropagator
 using LinearAlgebra
+using DifferentialEquations
 
 include("SolarSystemDynamics.jl")
 # Write your package code here.
 
-export twobody!
+export NBodyProblem
+export propagate
 
 """
 NBodyProblem{K}(x0, tspan, list_bodies; kwargs...)
@@ -24,7 +26,6 @@ Constructor of the Struct `NBodyProblem{K}`.
 - `tsf`: Time scale factor.
 - `msf`: Mass scale factor.
 - `need_stm`: Whether the STM is needed.
-- `need_transitional_state`: Whether the transitional state is needed.
 """
 struct NBodyProblem{K}
     # Fields
@@ -40,13 +41,13 @@ struct NBodyProblem{K}
         ssd_ = SolarSystemDynamics()
 
         # Merge keyword argments
-        defaults = (; id_center=0, #= SOLAR SYSTEM BARYCENTER =#
+        defaults = (;
+            id_center=0, #= SOLAR SYSTEM BARYCENTER =#
             ref_frame="ECLIPJ2000",
             lsf=1.0e6, #= km =#
             tsf=1.0e6, #= s =#
             msf=1.0, #= kg =#
-            need_stm=false,
-            need_transitional_state=false
+            need_stm=false
         )
         kwargs_ = merge(defaults, kwargs)
 
@@ -104,6 +105,40 @@ function eom_nbp!(dxdt, x, p, t)
         end
     end
 end
+
+
+"""
+   propagate(prob, kwargs...)
+
+Computes the equation of motion for the N-body problem.
+
+# Arguments
+- `nbp`: NBodyProblem definition
+- `kwargs`: Keyword arguments.
+"""
+function propagate(nbp::NBodyProblem; kwargs...)
+    # Merge keyword argments
+    defaults = (;
+        reltol=1.0e-10, # Relative Tolerance
+        abstol=1.0e-10 # Absolute Tolerance
+    )
+    kwargs_ = merge(defaults, kwargs)
+
+    # Scaling
+    x0_ = [nbp.x0[1:3] / nbp.kwargs.lsf; nbp.x0[4:6] / (nbp.kwargs.lsf / nbp.kwargs.tsf)]
+    tspan_ = (nbp.tspan[1] / nbp.kwargs.tsf, nbp.tspan[2] / nbp.kwargs.tsf)
+
+    # Definition of ODEProblem
+    prob = ODEProblem(eom_nbp!, x0_, tspan_, merge((; list_bodies=nbp.list_bodies, ssd=nbp.ssd), nbp.kwargs))
+    sol_ = solve(prob, Vern7(); kwargs_...)
+
+    # Unscaling
+    sol = vcat(sol_[1:3, :] .* nbp.kwargs.lsf, sol_[4:6, :] .* (nbp.kwargs.lsf / nbp.kwargs.tsf))
+
+    # Returns
+    return sol
+end
+
 
 
 # Definition of Ordinary Differential Equation
