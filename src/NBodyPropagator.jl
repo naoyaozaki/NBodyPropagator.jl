@@ -93,7 +93,7 @@ function eom_nbp!(dxdt, x, p, t)
 
         # Acceleration of the central body relative to an inertial frame
         if p.id_center != 0 && p.id_center != id
-            dxdt[4:6] -= gm_scaled * r_body / norm(r_body)^3
+            dxdt[4:6] -= gm_scaled * r_body / norm(r_body)^3 # TODO: This acceleration should be calculated via ephemeris
 
             #         // For STM Pre-computation
             #         if (x.size() > dim_state_) // if (std::get<bool>(options_["need_stm"]))
