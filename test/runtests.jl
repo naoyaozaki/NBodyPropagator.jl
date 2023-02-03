@@ -47,7 +47,7 @@ using Test
         @test SPICE.spkez(502, et, "J2000", "NONE", 599)[1] == expected
     end
 
-    @testset "Case 4: NbodyProblem.jl Propagation" begin
+    @testset "Case 4: Interplanetary N-body propagation" begin
         # Expected solution computed by jTOP
         expected = [+4.223450194979922e+07, +1.167640417577651e+08, +7.759087742359675e+06, +9.233242342590227e+00, -5.023717927929555e+00, +2.053384118051583e+00]  # km, km/s
 
@@ -64,5 +64,24 @@ using Test
         sol = propagate(nbp)
 
         @test sol[:, end] ≈ expected rtol = 1e-10
+    end
+
+    @testset "Case 5: Earth orbiting N-body propagation" begin
+        # Expected solution computed by jTOP
+        expected = [-2.291792316114288e+04, +4.609531317147258e+04, +8.960615353005227e+03, -2.217738317104420e+00, -1.185657482487868e+00, -2.299275473222509e-01]  # km, km/s
+
+        # Parameter Setting
+        list_bodies = [10, 399, 301, 299, 499, 599]
+
+        # Initial Condition
+        et0 = SPICE.str2et("2023/07/01 00:00:00 UTC")
+        x0 = [42000, 10, 50, 0.5, 3.080663355435613, 0.6]
+        tspan = (et0, et0 + 30.0 * 86400.0)
+
+        # Integrate
+        nbp = NBodyProblem(x0, tspan, list_bodies, id_center=399, ref_frame="J2000", lsf=1.0e5, tsf=1.0e5)
+        sol = propagate(nbp)
+
+        @test sol[:, end] ≈ expected rtol = 1e-6
     end
 end
