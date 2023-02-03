@@ -12,6 +12,7 @@ ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
 Sundials = "c3572dad-4567-51f8-b174-8c6c989267f4"
+Tensorial = "98f94333-fa9f-48a9-ad80-1c66397b2b38"
 
 [compat]
 julia = "1"
