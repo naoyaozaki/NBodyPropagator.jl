@@ -4,6 +4,7 @@ authors = ["Naoya Ozaki"]
 version = "0.1.0"
 
 [deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
