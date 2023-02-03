@@ -17,6 +17,7 @@ Constructor of the Struct `NBodyProblem{K}`.
 - `x0`: Initial state vector.
 - `tspan`: Time span.
 - `list_bodies`: List of bodies.
+- `ssd`: Solar system dynamics parameter sets.
 - `kwargs`: Keyword arguments.
 
 # Keyword Arguments

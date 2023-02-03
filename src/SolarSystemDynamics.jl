@@ -9,7 +9,8 @@ export SolarSystemDynamics
 import SPICE
 using Downloads
 
-"""Solar System Dynamics Parameter Sets (Struct)
+"""
+Solar System Dynamics Parameter Sets (Struct)
 
 Attributes:
     AU (Float64)               : Astronomical unit, km
