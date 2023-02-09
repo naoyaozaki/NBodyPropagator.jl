@@ -33,9 +33,6 @@ using Test
     end
 
     @testset "Case 3: Test values of SPICE" begin
-        # Compared with jTOP (MATLAB) results
-        init_spice_kernels()
-
         # Moon state vector
         et = SPICE.str2et("2022/12/02 13:52:32 UTC") # Initial Epoch
         expected = [5.07170845744684636593e+07, 1.38670086263312786818e+08, -2.87103076627328991890e+04, -2.85197938092883269690e+01, 1.10662945701793731246e+01, 6.97827903405290328465e-02]

@@ -9,6 +9,15 @@ export NBodyProblem
 export propagate
 
 """
+Initialization function of the NBodyPropagator module, which is called immediately after the module is loaded (e.g., by import, using, or require) at runtime for the first time 
+    (i.e., __init__ is only called once, and only after all statements in the module have been executed).
+"""
+function __init__()
+    # Furnish SPICE Kernels
+    init_spice_kernels()
+end
+
+"""
 NBodyProblem{K}(x0, tspan, list_bodies; kwargs...)
 
 Constructor of the Struct `NBodyProblem{K}`.
