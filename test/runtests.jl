@@ -58,9 +58,9 @@ using Test
 
         # Integrate
         nbp = NBodyProblem(x0, tspan, list_bodies)
-        sol = propagate(nbp)
+        t_all, state_all = propagate(nbp)
 
-        @test sol[:, end] ≈ expected rtol = 1e-10
+        @test state_all[:, end] ≈ expected rtol = 1e-10
     end
 
     @testset "Case 5: Earth orbiting N-body propagation" begin
@@ -77,9 +77,9 @@ using Test
 
         # Integrate
         nbp = NBodyProblem(x0, tspan, list_bodies, id_center=399, ref_frame="J2000", lsf=1.0e5, tsf=1.0e5)
-        sol = propagate(nbp)
+        t_all, state_all = propagate(nbp)
 
-        @test sol[:, end] ≈ expected rtol = 1e-6
+        @test state_all[:, end] ≈ expected rtol = 1e-6
     end
 
     @testset "Case 6: Interplanetary N-body propagation (SSB center) with STM" begin
@@ -106,7 +106,7 @@ using Test
 
         # Integrate
         nbp = NBodyProblem(x0, tspan, list_bodies, id_center=0, need_stm=true)
-        state_all, stm_all, dxdt0_all = propagate(nbp)
+        t_all, state_all, stm_all, dxdt0_all = propagate(nbp)
 
         @test state_all[:, end] ≈ expected_sv rtol = 1e-5
         @test stm_all[:, :, end] ≈ expected_stm rtol = 1e-6
@@ -137,7 +137,7 @@ using Test
 
         # Integrate
         nbp = NBodyProblem(x0, tspan, list_bodies, id_center=399, need_stm=true, lsf=1.0, tsf=1.0, msf=1.0)
-        state_all, stm_all, dxdt0_all = propagate(nbp)
+        t_all, state_all, stm_all, dxdt0_all = propagate(nbp)
 
         @test state_all[:, end] ≈ expected_sv rtol = 1e-5
         @test stm_all[:, :, end] ≈ expected_stm rtol = 1e-6

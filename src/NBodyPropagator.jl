@@ -79,24 +79,24 @@ Computes the equation of motion for the N-body problem.
 """
 function eom_nbp!(dxdt, x, p, t)
     # Initialize dx/dt
-    dxdt[1:3] = x[4:6]
-    dxdt[4:6] = zeros(3)
+    dxdt[1:3] .= x[4:6]
+    dxdt[4:6] .= 0.0
 
     # Calculate Gravitational Acceleration
     for id in p.list_bodies
         # Get planetary ephemeris
         x_body, _ = SPICE.spkez(id, t * p.tsf, p.ref_frame, "NONE", p.id_center)
         r_body = x_body[1:3] / p.lsf
-        v_body = x_body[4:6] / (p.lsf / p.tsf)
+        #v_body = x_body[4:6] / (p.lsf / p.tsf)
         gm_scaled = p.ssd.GM[p.ssd.NAME[id]] / (p.lsf^3 / p.tsf^2)
 
         # Acceleration due to the body id
         r_rel = x[1:3] - r_body
-        dxdt[4:6] -= gm_scaled * r_rel / norm(r_rel)^3
+        dxdt[4:6] .-= gm_scaled * r_rel / norm(r_rel)^3
 
         # Acceleration of the central body relative to an inertial frame
         if p.id_center != 0 && p.id_center != id
-            dxdt[4:6] -= gm_scaled * r_body / norm(r_body)^3 # TODO: This acceleration should be calculated via ephemeris
+            dxdt[4:6] .-= gm_scaled * r_body / norm(r_body)^3 # TODO: This acceleration should be calculated via ephemeris
         end
     end
 
@@ -116,8 +116,8 @@ Computes the equation of motion for the N-body problem.
 """
 function eom_nbp_with_stm!(dxdt, x, p, t)
     # Initialize dx/dt
-    dxdt[1:3] = x[4:6]
-    dxdt[4:6] = zeros(3)
+    dxdt[1:3] .= x[4:6]
+    dxdt[4:6] .= 0.0
     dfdr = zeros(3, 3)
     dfdt0 = zeros(3)
 
@@ -131,20 +131,20 @@ function eom_nbp_with_stm!(dxdt, x, p, t)
 
         # Acceleration due to the body id
         r_rel = x[1:3] - r_body
-        dxdt[4:6] -= gm_scaled * r_rel / norm(r_rel)^3
+        dxdt[4:6] .-= gm_scaled * r_rel / norm(r_rel)^3
 
         # For STM pre-computation
         dfdr_id = gm_scaled * (-Matrix{Float64}(I, 3, 3) / norm(r_rel)^3 + 3.0 * kron(r_rel, r_rel') / norm(r_rel)^5)
-        dfdr += dfdr_id
-        dfdt0 -= dfdr_id * v_body
+        dfdr .+= dfdr_id
+        dfdt0 .-= dfdr_id * v_body
 
         # Acceleration of the central body relative to an inertial frame
         if p.id_center != 0 && p.id_center != id
-            dxdt[4:6] -= gm_scaled * r_body / norm(r_body)^3 # TODO: This acceleration should be calculated via ephemeris
+            dxdt[4:6] .-= gm_scaled * r_body / norm(r_body)^3 # TODO: This acceleration should be calculated via ephemeris
 
             # For STM pre-computation
-            dfdr_id = gm_scaled * (-Matrix{Float64}(I, 3, 3) / norm(r_body)^3 + 3.0 * kron(r_body, r_body') / norm(r_body)^5)
-            dfdt0 += dfdr_id * v_body
+            dfdr_id .= gm_scaled * (-Matrix{Float64}(I, 3, 3) / norm(r_body)^3 + 3.0 * kron(r_body, r_body') / norm(r_body)^5)
+            dfdt0 .+= dfdr_id * v_body
         end
     end
 
@@ -159,12 +159,12 @@ function eom_nbp_with_stm!(dxdt, x, p, t)
     ]
     d_dxdx0_dt = dfdx * dxdx0
     # Postprocess
-    dxdt[7:42] = vec(d_dxdx0_dt)
+    dxdt[7:42] .= vec(d_dxdx0_dt)
 
     ## Calcualte dxdt0
     dxdt0 = x[43:48]
-    dxdt[43:48] = dfdx * dxdt0
-    dxdt[46:48] += dfdt0
+    dxdt[43:48] .= dfdx * dxdt0
+    dxdt[46:48] .+= dfdt0
 
 end
 
@@ -188,7 +188,9 @@ function propagate(nbp::NBodyProblem; kwargs...)
 
     if !nbp.kwargs.need_stm # State vector only (without STM)
         # Preprocess (Scaling)
-        x0_ = [nbp.x0[1:3] / nbp.kwargs.lsf; nbp.x0[4:6] / (nbp.kwargs.lsf / nbp.kwargs.tsf)]
+        x0_ = nbp.x0[1:6]
+        x0_[1:3] ./= nbp.kwargs.lsf
+        x0_[4:6] ./= (nbp.kwargs.lsf / nbp.kwargs.tsf)
         tspan_ = (nbp.tspan[1] / nbp.kwargs.tsf, nbp.tspan[2] / nbp.kwargs.tsf)
 
         # Define and solve of ODEProblem
@@ -196,15 +198,21 @@ function propagate(nbp::NBodyProblem; kwargs...)
         sol_ = solve(prob, Vern7(); kwargs_...)
 
         # Postprocess (Unscaling)
-        state_all = vcat(sol_[1:3, :] .* nbp.kwargs.lsf, sol_[4:6, :] .* (nbp.kwargs.lsf / nbp.kwargs.tsf))
+        t_all = sol_.t
+        state_all = sol_[1:6, :]
+        t_all .*= nbp.kwargs.tsf
+        state_all[1:3, :] .*= nbp.kwargs.lsf
+        state_all[4:6, :] .*= (nbp.kwargs.lsf / nbp.kwargs.tsf)
 
         # Return
-        return state_all
+        return t_all, state_all
 
     else # State vector with STM
         ## Preprocess (Scaling and initial STM)
         # Scaling
-        x0_ = [nbp.x0[1:3] / nbp.kwargs.lsf; nbp.x0[4:6] / (nbp.kwargs.lsf / nbp.kwargs.tsf)]
+        x0_ = nbp.x0[1:6]
+        x0_[1:3] ./= nbp.kwargs.lsf
+        x0_[4:6] ./= (nbp.kwargs.lsf / nbp.kwargs.tsf)
         tspan_ = (nbp.tspan[1] / nbp.kwargs.tsf, nbp.tspan[2] / nbp.kwargs.tsf)
         # Initial STM
         append!(x0_, [vec(Matrix{Float64}(I, 6, 6)); zeros(6, 1)])
@@ -214,19 +222,23 @@ function propagate(nbp::NBodyProblem; kwargs...)
         sol_ = solve(prob, Vern7(); kwargs_...)
 
         ## Postprocess (Reshape STMs and unscaling)
+        t_all = sol_.t
+        state_all = sol_[1:6, :]
         stm_all = reshape(sol_[7:42, :], 6, 6, :)
         dxdt0_all = sol_[43:48, :]
         # Unscaling
-        state_all = vcat(sol_[1:3, :] .* nbp.kwargs.lsf, sol_[4:6, :] .* (nbp.kwargs.lsf / nbp.kwargs.tsf))
+        t_all .*= nbp.kwargs.tsf
+        state_all[1:3, :] .*= nbp.kwargs.lsf
+        state_all[4:6, :] .*= nbp.kwargs.lsf / nbp.kwargs.tsf
         # stm_all[1:3,1:3,:] *= nbp.kwargs.lsf/nbp.kwargs.lsf #= dr/dr =#
-        stm_all[1:3, 4:6, :] *= nbp.kwargs.tsf #= dr/dv =#
-        stm_all[4:6, 1:3, :] /= nbp.kwargs.tsf #= dv/dr =#
+        stm_all[1:3, 4:6, :] .*= nbp.kwargs.tsf #= dr/dv =#
+        stm_all[4:6, 1:3, :] ./= nbp.kwargs.tsf #= dv/dr =#
         # stm_all[4:6,4:6,:] *= (nbp.kwargs.lsf/nbp.kwargs.tsf) / (nbp.kwargs.lsf/nbp.kwargs.tsf) #= dv/dv =#
-        dxdt0_all[1:3, :] *= nbp.kwargs.lsf / nbp.kwargs.tsf #= dr/dt0 =#
-        dxdt0_all[4:6, :] *= nbp.kwargs.lsf / nbp.kwargs.tsf^2 #= dv/dt0 =#
+        dxdt0_all[1:3, :] .*= nbp.kwargs.lsf / nbp.kwargs.tsf #= dr/dt0 =#
+        dxdt0_all[4:6, :] .*= nbp.kwargs.lsf / nbp.kwargs.tsf^2 #= dv/dt0 =#
 
         # Return 
-        return state_all, stm_all, dxdt0_all
+        return t_all, state_all, stm_all, dxdt0_all
     end
 
 end
