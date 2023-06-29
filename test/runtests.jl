@@ -12,9 +12,9 @@ using Test
         @test ssd.AU == 149597870.7 # km
         @test ssd.ID["EARTH"] == 399 # <Integer>
         @test ssd.ID["PHOBOS"] == 401 # <Integer>
-        @test ssd.GM["EARTH"] == 3.98600435436095925979e+05 # km3/s2
-        @test ssd.GM["MOON"] == 4.90280006616379614570e+03 # km3/s2
-        @test ssd.GM["TITAN"] == 8.97813884530737595924e+03 # km3/s2
+        @test ssd.GM["EARTH"] == 398600.4355070226 # km3/s2
+        @test ssd.GM["MOON"] == 4902.800118457549 # km3/s2
+        @test ssd.GM["TITAN"] == 8978.137095521046 # km3/s2
         @test ssd.RE["EARTH"] == 6.37813659999999981665e+03 # km
         @test ssd.RE["VENUS"] == 6.05180000000000018190e+03 # km
         @test ssd.RE["TITAN"] == 2.57515000000000009095e+03 # km
